@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esercizio Settimanale Classi w3 js2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <style>
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand">Editor</a>
+              <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="cerca">
+                <button class="btn btn-outline-success" type="button" id="btncerca">Search</button>
+              </form>
+            </div>
+          </nav>
+    </header>
+        <!--Main-->
+    <main class="mt-3 mx-3">
+        <section class="row">
+               <div class="col-sm-6">
+                   <div class="card">
+                       <!--Form-->
+                        <form class="card-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Title</span>
+                                <input type="text" class="form-control" id="artTitle">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" style="height: 400px" id="artBody"></textarea>
+                            </div>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-primary" id="new">New</button>
+                                <button type="button" class="btn btn-success" id="save">Save</button>
+                            </div>
+                        </form>
+                   </div>
+               </div>
+               <!--Lista-->
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body divLista">
+                            <h2>Your files</h2>
+                            <ul class="list-group" id="lista"></ul>
+                            <div id="divCorpo"></div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+    </main>
+    
+
+    <script> 
+    
+        // TextArea formattazione 
+        tinymce.init({
+        selector: 'textarea#artBody'
+        });
+
+
+        // Classe
+        class Post {
+            constructor (Titolo, Corpo) {
+                this.titolo = Titolo;
+                this.corpo = Corpo;
+            }
+        };
+
+
+
+
+        // Presa dati nel localStorage
+        if (localStorage.getItem('Post')) {
+            var listaPost = localStorage.getItem('Post');
+            listaPost = JSON.parse(listaPost);
+        } else {
+            var listaPost = [];
+        };
+
+
+
+
+        // Pulsante SAVE
+        const save = document.querySelector('#save');
+        save.addEventListener('click', () => {
+            const titolo = document.querySelector('#artTitle').value;
+            const corpo = tinymce.get("artBody").getContent({ format: "text" });
+            let post = new Post (titolo, corpo);
+            listaPost.push(post);
+            localStorage.setItem('Post', JSON.stringify(listaPost));
+            const lista = document.querySelector('#lista');
+            lista.innerHTML = '';
+            caricaPost();
+        });
+
+
+
+        
+        // Pulsante CERCA
+        const btncerca = document.querySelector('#btncerca');
+        btncerca.addEventListener('click', () => {
+            const cerca = document.querySelector('#cerca').value;
+            let risultati = [];
+            listaPost.forEach( (post) => {
+                if (post.titolo.indexOf(cerca) > -1) {
+                    risultati.push(post);
+                }
+            });
+            const lista = document.querySelector('#lista');
+            lista.innerHTML = '';
+            risultati.forEach( (post, index) => {
+                creaPost(post, index);
+            })
+        });
+
+
+
+
+        // Pulsante NEW
+        const nuovo = document.querySelector('#new');
+        nuovo.addEventListener('click', () => {
+            const svuotaBody = tinymce.get('artBody').setContent('');
+            const svuotaTitle = document.querySelector('#artTitle').value = '';
+        });
+
+
+
+        
+
+        // funzioni
+        function caricaPost() {
+            listaPost.forEach( (post, index) => {
+                creaPost(post, index);
+            });
+        };
+
+
+        function creaPost(post, index) {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            console.log(post.titolo);
+            li.innerHTML = `<a href="#" onclick="vCorpo(${index})">${post.titolo}</a>`;
+            lista.appendChild(li);
+        };
+
+
+        function vCorpo(index) {
+            const divCorpo = document.querySelector('#divCorpo');
+            divCorpo.innerHTML = `<h2 class="card-title">${listaPost[index].titolo}</h2><p class="card-text">${listaPost[index].corpo}</p><button type='button' onclick='nascondi(${index})' class="btn btn-danger">Nascondi</button>`;
+        };
+
+
+        function nascondi(index) {
+            divCorpo.innerHTML = '';
+        };
+
+    </script>
+</body>
+</html>
