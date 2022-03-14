@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single page application</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.min.js"></script>
+    <style>
+     .card {
+         max-width: 150px;
+     }
+
+     .btnInvia {
+       border: rgba(128, 128, 128, 0.466) 1px solid;
+     }
+
+     .titolo {
+       box-shadow: rgba(128, 128, 128, 0.37) 0px 5px 10px;
+       padding: 0.5em;
+     }
+
+     .ActiveNew {
+       border-bottom: 1px solid blue ;
+     }
+    </style>
+    </head>
+<body class="container">
+    <header>
+      <h1 class="titolo">Single page application <span class="text-secondary fs-5">with Vanilla JS</span></h1>
+      <nav class="navbar navbar-expand-lg navbar-light bg-info rounded">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Brand</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="#/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#/classifica">Classifica</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#/tornei">Tornei</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#/form">Form</a>
+              </li>
+            </ul>
+            <form class="d-flex formCerca">
+              <input class="form-control me-2 cerca" type="search" placeholder="Cerca Luogo" aria-label="Search">
+              <button class="btn btn-outline-success btn_c btncerca" type="button">Cerca</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+          
+    </header>
+    <main>
+        <div class="wrapper px-3"></div>
+    </main> 
+    
+    <script>
+        window.addEventListener('hashchange', function(e) {
+        const url = e.newURL
+        const h = url.split('#')[1];
+        stampaVar(e,'#' + h);
+        })
+
+        const formCerca = document.querySelector('.formCerca');
+        const dettagliTr = document.createElement('tr');
+        const urlImg = '/data/images/PlayerImage';
+        const url = window.location.href;
+        const h ='#' + url.split('#')[1];
+        stampaVar(null,h);
+
+        const menuLinks = document.querySelectorAll('.nav-link');
+        menuLinks.forEach((menuLink) => {
+        menuLink.addEventListener('click', function(e) {
+          menuLinks.forEach((menuLink) => {
+          menuLink.classList.remove('ActiveNew');
+          })
+          this.classList.add('ActiveNew')
+          const h = this.getAttribute('href');
+          const title = e.target.innerHTML;
+          history.pushState(h, title);
+          })
+        })
+
+      function stampaVar(e,h) {
+        switch(h) {
+          case '#/':
+            caricaHome();
+            nascondiCerca();
+            break;
+          case '#/classifica':
+            caricaClassifica();
+            nascondiCerca();
+            break;
+          case '#/tornei':
+            caricaTornei();
+            mostraCerca();
+            break;
+          case '#/form':
+            caricaForm();
+            nascondiCerca();
+            break;
+        }
+      }
+
+      function caricaHome () {
+        svuotaWrapper();
+        document.querySelector('.wrapper').innerHTML = '<h2>Home</h2>';
+        fetch('/datiPlayers10')
+            .then(response => response.json())
+            .then(data => {
+                const wrapper = document.querySelector('.wrapper');
+                const divCont = document.createElement('div');
+                divCont.classList.add('row', 'justify-content-center');
+                wrapper.appendChild(divCont);
+                data.forEach((player) => {
+                    const divCard = document.createElement('div');
+                    divCard.classList.add('card','col','border-0', 'text-center');
+                    divCard.innerHTML = `<img src="${urlImg + player.position + '.png'}" class="card-img-top""><div class="card-body p-0"><p class="">${player.name}</p></div>`;
+                    divCont.appendChild(divCard);
+                })
+            })
+      }
+
+      function caricaClassifica() {
+          svuotaWrapper();
+          document.querySelector('.wrapper').innerHTML = '<h2>Classifica</h2>';
+          fetch('/datiPlayers')
+            .then(response => response.json())
+            .then(data => {
+                const wrapper = document.querySelector('.wrapper');
+                const tabella = document.createElement('table');
+                tabella.classList.add('table');
+                const tHead = document.createElement('thead');
+                tHead.innerHTML = `<th scope="col">Nome</th><th scope="col">Rank</th><th scope="col">Points</th>`;
+                tabella.appendChild(tHead);
+                const tBody = document.createElement('tbody');
+                tabella.appendChild(tBody);
+                data.forEach((player, i) => {
+                  const riga = document.createElement('tr');
+                  riga.classList.add('table-info', 'dettagli');
+                  riga.setAttribute('data-id', `${i}`);
+                  riga.innerHTML = `<td class="fw-bold">${player.name}</td><td class="text-secondary">${player.position}</td><td class="text-secondary">${player.points}</td>`;
+                  tBody.appendChild(riga);
+                });
+                wrapper.appendChild(tabella);
+                dettagli();
+            })   
+      }
+
+      function caricaTornei() {
+          svuotaWrapper();
+          document.querySelector('.wrapper').innerHTML = '<h2>Tornei</h2>';
+          fetch('/datiTorneo')
+            .then(response => response.json())
+            .then(data => {
+                const wrapper = document.querySelector('.wrapper');
+                const tabella = document.createElement('table');
+                tabella.classList.add('table');
+                const tHead = document.createElement('thead');
+                tHead.innerHTML = `<th scolpe="col">Nome</th><th scope="col">Luogo</th><th scope="col">Superficie</th>`;
+                tabella.appendChild(tHead);
+                const tBody = document.createElement('tbody');
+                tabella.appendChild(tBody);
+                data.forEach((torneo) => {
+                  const riga = document.createElement('tr');
+                  riga.classList.add('table-info');
+                  riga.innerHTML = `<td class="fw-bold">${torneo.name}</td><td class="text-secondary">${torneo.area_name}</td><td class="text-secondary">${torneo.court}</td>`;
+                  tBody.appendChild(riga);
+                });
+                wrapper.appendChild(tabella)
+                cercaTornei ();
+            })   
+      }
+
+      function caricaForm() {
+        svuotaWrapper();
+        document.querySelector('.wrapper').innerHTML = '<h2>Form</h2>';
+        const wrapper = document.querySelector('.wrapper');
+        const form = document.createElement('form');
+        const divfName = document.createElement('div');
+        divfName.classList.add('mb-3');
+        divfName.innerHTML = '<input type="text" class="form-control" id="fName" placeholder="Nome">';
+        form.appendChild(divfName);
+        const divlName = document.createElement('div');
+        divlName.classList.add('mb-3');
+        divlName.innerHTML = '<input type="text" class="form-control" id="lName" placeholder="Cognome">';
+        form.appendChild(divlName);
+        const btn = document.createElement('button');
+        btn.setAttribute('type', 'button');
+        btn.classList.add('btn', 'btn-light', 'btnInvia');
+        btn.innerHTML = 'Invia';
+        form.appendChild(btn);
+        wrapper.appendChild(form);
+        invia();
+      }
+
+      function invia () {
+        const btnInvia = document.querySelector('.btnInvia');
+        btnInvia.addEventListener('click', function(e) {
+          e.preventDefault();
+          const fName = document.getElementById('fName').value;
+          const lName = document.getElementById('lName').value;
+          const data = {'First Name': fName, 'Last Name': lName};
+          fetch('/inviaDati', {
+            method: 'POST',
+            headers: {'Content-Type':'Application/json'},
+            body: JSON.stringify(data),
+          }).then(function(response) {
+                console.log(response);
+            })
+        })
+      }
+
+      function dettagli() {
+        const mostraDettagli = document.querySelectorAll('.dettagli');
+        mostraDettagli.forEach((mostraDettaglio)=> {
+          mostraDettaglio.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            dettagliTr.innerHTML = '';
+            fetch('/datiPers')
+                .then(response => response.json())
+                .then(data => {
+                    const divDettagli = document.createElement('div');
+                    divDettagli.innerHTML = `<img src="${urlImg + (id+1)}.png"><h2>${data[id].firstname} ${data[id].lastname}</h2> <p class="mb-0"><span class="fw-bold">Data di nascita:</span> ${data[id].date_of_birth}</p><p><span class="fw-bold">Nazionalità:</span> ${data[id].nationality}</p><button type="btn" class="btn btn-success nascondi" onclick="nascondi()">Nascondi</button>`;
+                    dettagliTr.appendChild(divDettagli);
+                    this.after(dettagliTr);
+                    });
+          })
+        })
+      }
+        
+      function nascondi() {
+        dettagliTr.innerHTML = '';
+      }
+
+      function cercaTornei () {
+        const btncerca = document.querySelector('.btncerca');
+          btncerca.addEventListener('click', () => {
+              const cerca = document.querySelector('.cerca').value;
+              let risultati = [];
+              fetch('/datiTorneo')
+                  .then(response => response.json())
+                  .then(data => { 
+                      data.forEach((torneo) => {
+                          if (torneo.area_name.indexOf(cerca) > -1) {
+                              risultati.push(torneo);
+                          }
+                      });
+                      const wrapper = document.querySelector('.wrapper');
+                      wrapper.innerHTML = '';
+                      document.querySelector('.wrapper').innerHTML = `<h2>Risultati della ricerca: ${cerca}</h2>`;
+                      const tabella = document.createElement('table');
+                      tabella.classList.add('table');
+                      const tHead = document.createElement('thead');
+                      tHead.innerHTML = `<th scolpe="col">Nome</th><th scope="col">Luogo</th><th scope="col">Superficie</th>`;
+                      tabella.appendChild(tHead);
+                      const tBody = document.createElement('tbody');
+                      tabella.appendChild(tBody);
+                      risultati.forEach((torneo, i) => {
+                        const riga = document.createElement('tr');
+                        riga.classList.add('table-info', 'dettagli');
+                        riga.setAttribute('data-id', `${i}`);
+                        riga.innerHTML = `<td class="fw-bold">${torneo.name}</td><td class="text-secondary">${torneo.area_name}</td><td class="text-secondary">${torneo.court}</td>`;
+                        tBody.appendChild(riga);
+                      })
+                      wrapper.appendChild(tabella);
+                  });
+          })
+      }
+
+      function svuotaWrapper() {
+        document.querySelector('.wrapper').innerHTML = '';
+      }
+      
+      function nascondiCerca() {
+        formCerca.style.display = 'none';
+        formCerca.classList.remove('d-flex');
+      }
+
+      function mostraCerca() {
+        formCerca.style.display = '';
+        formCerca.classList.add('d-flex');
+      }
+    
+    </script>
+</body>
+</html>

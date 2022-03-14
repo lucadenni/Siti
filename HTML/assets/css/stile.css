@@ -1,0 +1,203 @@
+
+/*ISTRUZIONE GENERALI*/
+body {
+    font-family: Fira Sans, Helvetica, Arial, sans-serif;
+}
+
+
+/*HEADER*/
+header {
+    box-shadow:  5px 5px 5px rgba(128, 128, 128, 0.37);
+}
+
+header .navbar-nav a {
+    border-radius: 10%;
+}
+
+header .navbar-nav a:hover {
+    background-color: skyblue;
+    border-radius: 10%;
+}
+
+.button-l {
+    background: linear-gradient(90deg, rgba(9,0,164,1) 0%, rgba(114,114,212,1) 63%, rgba(0,212,255,1) 100%);
+    border: none;
+    border-radius: 10;
+    width: auto;
+}
+
+.stretched-link::after {
+    position: relative;
+}
+
+/*MAIN*/
+.home a:hover, .chi-siamo a:hover {
+    box-shadow: slateblue 5px 5px 5px;
+}
+
+
+/*FOOTER*/
+footer p {
+    font-size: 0.8em;
+    color: grey;
+}
+
+footer h3 {
+    font-size: 1.2em;
+}
+
+footer i {
+    border-radius: 50%;
+    border: grey solid 1px;
+    padding: 0.7em;
+}
+
+.form-control {
+    border-radius: 0%;
+}
+
+footer a {
+    text-decoration: none;
+    color: black;
+}
+
+/*FINE ISTRUZIONE GENERALI*/
+
+
+
+
+
+
+/*MAIN HOME*/
+.imgsfondo {
+    padding: 6em 0 8em 0;
+    margin-top: 0.4em;
+    background-image: url(../images/banner.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    max-height: 100%;
+    background-position-x: center;
+    max-width: 100%; 
+}
+
+.imgsfondo h2, .imgsfondo p {
+    text-shadow: 3px 3px rgba(0, 0, 0, 0.041);
+}
+
+.titoloH1 {
+    font-size: 4em;
+}
+
+.home article p {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.home article div {
+    margin-top: 1.5em;
+}
+
+.home article i {
+    margin-bottom: 0.2em;
+    color: rgb(255, 70, 70);
+}
+
+.devday {
+    background-color: rgb(0, 0, 95);
+    padding: 4em 2em 1em 2em;
+}
+
+.home aside i {
+    color: rgb(23, 211, 23);
+    border-radius: 50%;
+    border: solid rgb(255, 70, 70) 2px;
+    padding: 0.5em;
+    float: left;
+    margin-bottom: 1em;
+}
+
+.home aside div h3 {
+    display: inline;
+    padding-left: 0.5em;
+}
+
+.home aside div p {
+    padding-left: 3.9em;
+    font-size: 00.8em;
+    color: grey;
+}
+
+.home aside div {
+    margin-bottom: 2em;
+}
+
+.imgresp {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+/*FINE HOME*/
+
+
+
+
+
+
+
+/*CHI SIAMO*/
+.box-in {
+    transform: skewX(-10deg);
+    padding: 4em 0.5em;
+}
+
+.box-col1 {
+    background-color: rgb(152,248,248);
+}
+
+.box-col2 {
+    background-color: rgb(255, 85, 99);
+}
+
+.box-col3 {
+    background-color: rgb(240, 229, 134);
+}
+
+.colBr {
+    background-color: rgba(202, 239, 255, 0.678);
+    height: 296px;
+}
+
+.colBr i {
+    color: green;
+}
+
+.chi-siamo p {
+    color: grey;
+    font-size: 00.8em;
+}
+/*FINE CHI SIAMO*/
+
+
+
+/*CONTATTI*/
+
+.contatti aside p, .contatti aside li {
+    color: grey;
+}
+
+.contatti aside li {
+    list-style: none;
+}
+
+.contatti aside ul {
+    padding: 0;
+}
+
+.contatti aside a {
+    text-decoration: none;
+}
+
+.contatti aside a:hover {
+    color: darkblue;
+}
+/*FINE CONTATTI*/
